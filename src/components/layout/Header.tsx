@@ -30,11 +30,13 @@ const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
 
   return (
-    <header className="w-full h-16 px-4 md:px-6 flex items-center justify-between border-b border-gray-200 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
+    <header className="w-full h-16 px-4 md:px-6 flex items-center justify-between border-b border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-800 shadow-sm">
       <div className="flex items-center gap-2">
         <Link to="/" className="flex items-center gap-2">
-          <BookOpen className="h-6 w-6 text-gray-700 dark:text-gray-300" />
-          <span className="font-medium text-gray-800 dark:text-gray-200 hidden md:inline-block">
+          <div className="p-2 bg-gray-800 rounded-lg">
+            <BookOpen className="h-5 w-5 text-white" />
+          </div>
+          <span className="font-semibold text-gray-800 dark:text-gray-200 hidden md:inline-block text-lg">
             {t("app.title")}
           </span>
         </Link>

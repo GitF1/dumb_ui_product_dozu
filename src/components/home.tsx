@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import Header from "./layout/Header";
 import ImportPanel from "./dashboard/ImportPanel";
 import ContentLibrary from "./dashboard/ContentLibrary";
@@ -12,6 +14,7 @@ import LearningSuggestion, {
 } from "./dashboard/LearningSuggestion";
 import ContentGeneration from "./dashboard/ContentGeneration";
 import ScheduleSetup from "./schedule/ScheduleSetup";
+import NextLearningContent from "./recommendations/NextLearningContent";
 import { useTranslation } from "react-i18next";
 import {
   BookOpen,
@@ -19,6 +22,14 @@ import {
   Gamepad2,
   MessageSquare,
   PlusCircle,
+  Calendar,
+  Library,
+  Sparkles,
+  Clock,
+  Target,
+  TrendingUp,
+  Play,
+  ArrowRight,
 } from "lucide-react";
 
 const Home: React.FC = () => {
@@ -219,6 +230,198 @@ const Home: React.FC = () => {
     }, 3000);
   };
 
+  // Mock data for current learning
+  const currentLearning = {
+    topic: "Advanced JavaScript Concepts",
+    module: "Closures and Scope",
+    progress: 65,
+    timeRemaining: "25 min",
+    nextSession: "Today, 3:00 PM",
+    difficulty: "Advanced",
+  };
+
+  const renderMainDashboard = () => {
+    return (
+      <div className="space-y-8">
+        {/* Component 1: Header with 3 Core Action Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Calendar className="h-6 w-6 text-white" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              <CardTitle className="text-xl font-semibold text-gray-800">
+                View Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Manage your learning timeline and track progress across all
+                topics.
+              </p>
+              <Button
+                onClick={() => setShowSchedule(true)}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              >
+                Open Schedule
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Library className="h-6 w-6 text-white" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              <CardTitle className="text-xl font-semibold text-gray-800">
+                Manage Library
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Organize your learning materials, flashcards, and study content.
+              </p>
+              <Button
+                onClick={() => navigate("/library")}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              >
+                Open Library
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              <CardTitle className="text-xl font-semibold text-gray-800">
+                Generate Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Create new learning materials with AI-powered content
+                generation.
+              </p>
+              <Button
+                onClick={handleCreateFlashcardsQuizzes}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              >
+                Create Content
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Component 2: Current Learning Topic */}
+        <Card className="bg-gradient-to-r from-gray-800 to-gray-700 text-white border-0 shadow-xl">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-lg">
+                  <Target className="h-6 w-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl font-bold">
+                    Current Learning
+                  </CardTitle>
+                  <p className="text-gray-300">
+                    Based on your timeline schedule
+                  </p>
+                </div>
+              </div>
+              <Badge className="bg-white/20 text-white border-white/30">
+                {currentLearning.difficulty}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold mb-1">
+                    {currentLearning.topic}
+                  </h3>
+                  <p className="text-gray-300">
+                    Module: {currentLearning.module}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progress</span>
+                    <span>{currentLearning.progress}%</span>
+                  </div>
+                  <div className="w-full bg-white/20 rounded-full h-2">
+                    <div
+                      className="bg-white rounded-full h-2 transition-all duration-300"
+                      style={{ width: `${currentLearning.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{currentLearning.timeRemaining} remaining</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{currentLearning.nextSession}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center lg:justify-end">
+                <Button
+                  onClick={() => handleStudyContent("current")}
+                  size="lg"
+                  className="bg-white text-gray-800 hover:bg-gray-100 font-semibold px-8"
+                >
+                  <Play className="mr-2 h-5 w-5" />
+                  Continue Learning
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Component 3: Recommended Topics */}
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-gray-800 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Recommended for You
+              </h2>
+              <p className="text-gray-600">
+                Personalized learning suggestions based on your progress
+              </p>
+            </div>
+          </div>
+          <NextLearningContent
+            onSelectContent={(contentId) => {
+              console.log("Selected content:", contentId);
+              // Handle content selection
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
   const renderWorkflowContent = () => {
     switch (workflowStep) {
       case "suggest":
@@ -287,89 +490,18 @@ const Home: React.FC = () => {
         );
       case "import":
       default:
-        return (
-          <>
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-end">
-                <Button
-                  onClick={handleCreateFlashcardsQuizzes}
-                  className="bg-gray-700 hover:bg-gray-800 text-white"
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Create Flashcards & Quizzes
-                </Button>
-              </div>
-              <ImportPanel
-                onFileSelect={handleFileSelect}
-                onTextImport={handleTextImport}
-                isProcessing={isProcessingImport}
-                processingProgress={processingProgress}
-              />
-            </div>
-
-            <ContentLibrary
-              onCreateContent={handleCreateContent}
-              onStudyContent={handleStudyContent}
-              onEditContent={(id) => {}}
-              onDeleteContent={(id) => {}}
-            />
-          </>
-        );
+        return renderMainDashboard();
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       <Header
         userName="John Doe"
         userAvatar="https://api.dicebear.com/7.x/avataaars/svg?seed=john"
         onOpenSettings={() => {}}
         onOpenSearch={() => {}}
       />
-
-      <div className="bg-white dark:bg-gray-800 border-b border-[#dee2e6] dark:border-gray-700 p-2">
-        <div className="flex gap-4">
-          <Button
-            variant={!showSchedule ? "default" : "outline"}
-            onClick={() => {
-              setShowSchedule(false);
-              setWorkflowStep("import");
-            }}
-            className={
-              !showSchedule
-                ? "bg-[#343a40] text-white"
-                : "text-[#495057] border-[#ced4da]"
-            }
-          >
-            {t("app.dashboard")}
-          </Button>
-          <Button
-            variant={showSchedule ? "default" : "outline"}
-            onClick={() => setShowSchedule(true)}
-            className={
-              showSchedule
-                ? "bg-[#343a40] text-white"
-                : "text-[#495057] border-[#ced4da]"
-            }
-          >
-            {t("library.title")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/progress")}
-            className="text-[#495057] border-[#ced4da]"
-          >
-            {t("flashcards.studyProgress")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/recommendations")}
-            className="text-[#495057] border-[#ced4da]"
-          >
-            {t("common.next")}
-          </Button>
-        </div>
-      </div>
 
       {isStudying ? (
         <div className="flex-1 p-4">
@@ -384,7 +516,7 @@ const Home: React.FC = () => {
           <ScheduleManager />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col gap-8 p-4 md:p-8">
+        <div className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
           {renderWorkflowContent()}
         </div>
       )}
